@@ -73,7 +73,7 @@ $(document).ready(function() {
               console.log(':memwiowjeiwoiew');
               let dookuImage = $('<img>');
               dookuImage.addClass('img-responsive');
-              dookuImage.attr('src', './assets/images/Darth_Maul_200px');
+              dookuImage.attr('src', './assets/images/Dooku_shrek.jpg');
               $('#enemies').append(dookuImage);
             }
               break;
