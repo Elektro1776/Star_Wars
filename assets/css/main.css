@@ -1,9 +1,68 @@
+
+.characters {
+display: -webkit-flex;
+height: inherit;
+width: 700px;
+align-items: center;
+}
+.characterChoices {
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+}
+.charactersContainer {
+  background-color: rgba(324,615,292,0.6);
+  border-radius: 100px;
+}
+.characterSelection {
+  min-height: 300px;
+  text-align: center;
+}
+.characterSelection p {
+  font-size: 30px;
+  color: #444;
+  text-align: center;
+}
+.flexContainerColumnCenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 700px;
+  align-items: center;
+}
+.gameBoard {
+  display: flex;
+  display: -webkit-flex;
+  height: 700px;
+  /*flex-direction: column;*/
+  align-items: center;
+  /*justify-content: center;*/
+}
+.gameBoard div {
+  color: #fff;
+}
 .jumbotron {
   background-color: #444;
 }
 
 .startIcons {
   /*position: relative;*/
+}
+.startIcons p {
+  font-size: 2.5em;
+  font-weight: bold;
+  font-family: DIN sans-serif;
+}
+#availableJedi {
+  /*border-bottom: solid 1px #fff;*/
+
+}
+#game {
+  background-image: url('../images/gameBoard.jpg');
+}
+#gameContainer {
+  text-align: center;
 }
 #jediStartLogo, #empireStartLogo {
   position: relative;

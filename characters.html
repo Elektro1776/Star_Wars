@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>StarWars</title>
+    <style media="screen">
+      @font-face {
+        font-family: DIN;
+        src: url('./assets/fonts/din145alt.ttf') format('truetype');
+      }
+    </style>
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/common.css">
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+    <script src="./assets/js/redux.min.js" charset="utf-8"></script>
+    <script src="./assets/js/index.js" charset="utf-8"></script>
+    <script src="./assets/js/store.js" charset="utf-8"></script>
+
+  </head>
+  <body id="game" class="selectCharacters">
+    <div class="flexContainerColumnCenter">
+      <div class="charactersContainer">
+        <!-- JEDI CHARACTERS -->
+        <div id="availableJedi" class="characters">
+          <div class="col-lg-12 characterSelection">
+            <p>JEDI</p>
+            <div id="jediCharacters" class="characterChoices">
+              <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <a id="luke" href="./game.html">
+                  <img src="./assets/images/Luke-200px.png" alt="Luke" class="img-responsive img-circle">
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <a id="yoda" href="./game.html">
+                  <img src="./assets/images/yoda-200px.png" alt="Yoda" class="img-circle img-responsive">
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <a id="obiWan" href="./game.html">
+                  <img src="./assets/images/Masterobiwan.jpg" alt="Obi Wan" class="img-circle img-responsive">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- SITH CHARACTERS -->
+        <div id="availableSith" class="characters">
+          <div class="col-lg-12 characterSelection">
+            <p>SITH</p>
+            <div id="sithCharacters" class='characterChoices'>
+              <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <a id="darthMaul" href="./game.html">
+                  <img src="./assets/images/Darth_Maul_200px.jpg" alt="Darth Maul" class="img-responsive img-circle">
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <a id="countDooku" href="./game.html">
+                  <img src="./assets/images/Dooku_shrek.jpg" alt="Count Dooku" class="img-circle img-responsive">
+                </a>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <a id="palpatine" href="./game.html">
+                  <img src="./assets/images/200px-Palpatine.jpg" alt="Count Dooku" class="img-circle img-responsive">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,3 +1,8 @@
+@font-face {
+  font-family: DIN;
+  src: url('./assets/fonts/din145alt.ttf') format('truetype');
+}
+
 html {
   height: 100%;
 }
@@ -7,4 +12,8 @@ body {
   flex-direction: column;
   height: 100%;
   background-color: #444;
+}
+body, p {
+  font-family: DIN sans-serif;
+  
 }

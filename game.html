@@ -16,15 +16,28 @@
     src="https://code.jquery.com/jquery-3.2.1.min.js"
     integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
     crossorigin="anonymous"></script>
+    <script src="./assets/js/redux.min.js" charset="utf-8"></script>
     <script src="./assets/js/index.js" charset="utf-8"></script>
-
+    <script src="./assets/js/store.js" charset="utf-8"></script>
   </head>
-  <body>
-    <div class="container-fluid">
+  <body id="game" class="gameBoard">
+    <div class="flexContainerColumnCenter">
       <div class="container">
-        <div class="col-lg-12">
-          <div id="characters" class="characterSelection">
-            CHARACTERS GO HERE
+        <div id="gameContainer" class="gameBoard">
+          <div class="col-lg-4 characterSelection">
+            <div id="userCharacter">
+              User Character GO's HERE
+            </div>
+          </div>
+          <div class="col-lg-4 characterSelection">
+            <div id="arena">
+              Arena GO's HERE
+            </div>
+          </div>
+          <div class="col-lg-4 characterSelection">
+            <div id="enemies">
+              Enimies GO's HERE
+            </div>
           </div>
         </div>
       </div>

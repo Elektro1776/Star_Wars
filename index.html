@@ -4,12 +4,6 @@
     <meta charset="utf-8">
     <title>StarWars</title>
   </head>
-  <style media="screen">
-    @font-face {
-      font-family: DIN;
-      src: url('./assets/fonts/din145alt.ttf') format('truetype');
-    }
-  </style>
   <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="./assets/css/common.css">
   <link rel="stylesheet" href="./assets/css/main.css">
@@ -17,23 +11,25 @@
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
+  <script src="./assets/js/redux.min.js" charset="utf-8"></script>
+  <script src="./assets/js/store.js" charset="utf-8"></script>
   <script src="./assets/js/index.js" charset="utf-8"></script>
 
-  <body>
+  <body class="gameIntro">
     <div class="contianer-fluid">
       <div class="jumbotron">
         <img id="coverImage"src="./assets/images/hero_phantom-Menace-image-2.jpg" style=" height: 500px; width: 100%"alt="STAR WARS" class="img-responsive">
       </div>
       <div class="container">
         <div class="startIcons col-lg-4  col-lg-offset-2  col-md-4  col-md-offset-2  col-sm-4  col-sm-offset-2  col-xs-4 col-xs-offset-2">
-          <a id="sith" href="./game.html" class="btn col-lg-12"name="button">
-            <img id="jediStartLogo" src="./assets/images/jediStartLogo.png" class="img-responsive img-circle" alt="JEDI" />
+          <a id="sith" href="./characters.html" class="btn col-lg-12"name="button">
+            <img id="jediStartLogo" src="./assets/images/jediStartLogo.png" class="img-responsive img-circle" alt="JEDI" value='jedi' />
             <p>JEDI</p>
           </a>
         </div>
         <div class="startIcons col-lg-4 col-md-4  col-sm-4  col-xs-4 ">
-          <a id="jedi" href="./game.html" class="btn col-lg-12"name="button">
-            <img id="empireStartLogo" src="./assets/images/empireStart.png" class="img-responsive img-circle" alt="EMPIRE" />
+          <a id="jedi" href="./characters.html" class="btn col-lg-12"name="button">
+            <img id="empireStartLogo" src="./assets/images/empireStart.png" class="img-responsive img-circle" alt="EMPIRE" value='sith'/>
             <p>SITH</p>
 
           </a>
