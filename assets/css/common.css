@@ -15,5 +15,6 @@ body {
 }
 body, p {
   font-family: DIN sans-serif;
-  
+  font-size: 18px;
+  color: #fff;
 }

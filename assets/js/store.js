@@ -44,7 +44,7 @@ const ELEKTRO = {
 const CharacterActions = () => {
     const that = {};
     that.selectedCharacter = ({name, HP, attackPower, defensePower}) => {
-      // console.log(' WHAT IS HAPPEINGIN IN OUR ACTIONS', name);
+      console.log(' WHAT IS HAPPEINGIN IN OUR ACTIONS', name, HP, attackPower, defensePower);
       return {
          type: 'SET_USER_CHARACTER', name, HP, attackPower, defensePower
        }
@@ -66,6 +66,7 @@ const GameActions = () => {
 // let test = sessionStorage.getItem('userCharacter');
 const CHARACTER = ELEKTRO.createReducer(sessionStorage, {
     [CHARACTER_ACTIONS.SET_USER_CHARACTER](state,action) {
+      console.log(' AND REDUCER ACTIONS????', action.name);
           return Object.assign({}, state, {userCharacter: action.name, power: action.attackPower, defense: action.defensePower, HP: action.HP });
     },
     [CHARACTER_ACTIONS.SET_ENIMIES](state,action) {

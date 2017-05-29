@@ -2,7 +2,7 @@
 .characters {
 display: -webkit-flex;
 height: inherit;
-width: 700px;
+width: inherit;
 align-items: center;
 }
 .characterChoices {
@@ -35,9 +35,9 @@ align-items: center;
   display: flex;
   display: -webkit-flex;
   height: 700px;
-  /*flex-direction: column;*/
+  flex-direction: row;
   align-items: center;
-  /*justify-content: center;*/
+  justify-content: center;
 }
 .gameBoard div {
   color: #fff;
@@ -76,6 +76,10 @@ align-items: center;
   top: -100px;
   right: -500px;
   opacity: 0;
+}
+#enemies span {
+  font-size: 40px;
+  color: #fff;
 }
 #coverImage {
   position: absolute;

@@ -37,15 +37,61 @@ $(document).ready(function() {
           left: left,
           right: right,
           opacity: '1',
-        }, 1000)
+        }, 2100)
       };
       function assembleEnemies(chosenTeam) {
         enemies = store.getState().CHARACTER.currentEnemies;
         return JSON.parse(enemies);
       }
+      function assignUserCharacter() {
+        userCharacter = store.getState().CHARACTER.userCharacter;
+        return JSON.parse(userCharacter);
+      }
+      function createCharacterImage(targetEl, imagePath) {
+        let img = $('<img>');
+        let imageContainer = $('<div>');
+        img.addClass('img-circle');
+        img.attr('src', imagePath);
+        imageContainer.append(img);
+        targetEl.append(imageContainer);
+      };
+
+      function createImages(el,character) {
+        switch (character) {
+          case 'darthMaul': {
+            createCharacterImage($(el), './assets/images/Darth_Maul_200px.jpg');
+          }
+          break;
+          case 'countDooku': {
+            createCharacterImage($(el), './assets/images/Dooku_shrek.jpg');
+          }
+            break;
+          case 'palpatine': {
+            createCharacterImage($(el), './assets/images/200px-Palpatine.jpg');
+
+          }
+          break;
+          case 'luke': {
+            createCharacterImage($(el), './assets/images/Luke-200px.png')
+          }
+          break;
+          case 'yoda': {
+            createCharacterImage($(el), './assets/images/yoda-200px.png')
+
+          }
+          break;
+          case 'obiWan': {
+            createCharacterImage($(el), './assets/images/Masterobiwan.jpg')
+
+          }
+          break;
+          default:
+          return
+        }
+      }
       that.fireIntro = () => {
-        slide(jediStartLogo, '+=100px', '+=500px', '');
-        slide(empireStartLogo, '+=100px', '','-=500px');
+        slide(jediStartLogo, '+=200px', '+=500px', '');
+        slide(empireStartLogo, '+=200px', '','-=500px');
 
         let { updateSideChosen } = GameActions();
 
@@ -54,52 +100,25 @@ $(document).ready(function() {
         });
         empireStartLogo.click(function() {
           store.dispatch(updateSideChosen($(this).attr('value')));
-        })
+        });
+        let audioObj = {
+          src: './assets/sounds/informant.mp3',
+          autoplay: true,
+        }
+        let audioIntroEl = $('<audio>');
+        audioIntroEl.attr(audioObj);
+        $(audioIntroEl).appendTo("body");
       };
       that.createGameBoard = () => {
         let currentEnemies = assembleEnemies();
-        console.log(' WHAT IS THE ENEMIESSSSS', currentEnemies);
-        currentEnemies.map((enemy) => {
-          console.log(' ENENENENENE', enemy);
-          switch (enemy) {
-            case 'darthMaul': {
-              let darthImage = $('<img>');
-              darthImage.addClass('img-responsive');
-              darthImage.attr('src', './assets/images/Darth_Maul_200px.jpg')
-              $('#enemies').append(darthImage)
-            }
-            break;
-            case 'countDooku': {
-              console.log(':memwiowjeiwoiew');
-              let dookuImage = $('<img>');
-              dookuImage.addClass('img-responsive');
-              dookuImage.attr('src', './assets/images/Dooku_shrek.jpg');
-              $('#enemies').append(dookuImage);
-            }
-              break;
-            case 'palpatine': {
-
-            }
-            break;
-            case 'luke': {
-
-            }
-            break;
-            case 'yoda': {
-
-            }
-            break;
-            case 'obiWan': {
-
-            }
-            break;
-            default:
-
-          }
-        })
+        let { userCharacter } = assignUserCharacter();
+        currentEnemies.map(enemy => createImages('#enemies',enemy));
+        createImages('#userCharacter',userCharacter.toLowerCase());
 
       };
+      that.startGame = () => {
 
+      }
       return that;
     };
 
@@ -131,7 +150,7 @@ $(document).ready(function() {
 
     /**
       Set all our state handlers here. We are using session storage to keep game state as
-      we go through the different.
+      we go through the different pages.
     */
     let select = (state) => state;
     let choseTeamHandler = () => {
@@ -146,9 +165,10 @@ $(document).ready(function() {
     let characterHandler = () => {
       let currentCharacter;
       let previousCharacter = currentCharacter;
-      currentCharacter = select(store.getState().CHARACTER.userCharacter);
+      currentCharacter = select(store.getState().CHARACTER);
+      console.log(' WHAT IS THE USER CHARACTER', currentCharacter);
       if (currentCharacter !== previousCharacter) {
-         sessionStorage.setItem('userCharacter', currentCharacter);
+         sessionStorage.setItem('userCharacter', JSON.stringify(currentCharacter));
       };
     }
     let enemiesHandler = () => {
@@ -224,5 +244,5 @@ $(document).ready(function() {
       game.createGameBoard();
     }
 
-
+console.log(' WHAT IS THE STATE????', store.getState());
 });
