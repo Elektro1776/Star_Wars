@@ -11,10 +11,10 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #444;
+  background-image: url('../images/spaceBackGround1.jpg');
 }
-body, p {
+body, p, span {
   font-family: DIN sans-serif;
   font-size: 18px;
-  color: #fff;
+  color: #222;
 }

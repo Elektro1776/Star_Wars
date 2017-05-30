@@ -1,4 +1,12 @@
-
+#availableJedi p,  #availableSith p {
+  color: #444;
+}
+.character:first-child {
+  max-height: 200px;
+}
+.character {
+  padding: 20px;
+}
 .characters {
 display: -webkit-flex;
 height: inherit;
@@ -21,7 +29,7 @@ align-items: center;
 }
 .characterSelection p {
   font-size: 30px;
-  color: #444;
+  color: #fff;
   text-align: center;
 }
 .flexContainerColumnCenter {
@@ -43,7 +51,7 @@ align-items: center;
   color: #fff;
 }
 .jumbotron {
-  background-color: #444;
+  background-image: url('../images/spaceBackGround1.jpg');
 }
 
 .startIcons {
@@ -54,14 +62,26 @@ align-items: center;
   font-weight: bold;
   font-family: DIN sans-serif;
 }
+#arena span {
+  /*font-size: */
+}
 #availableJedi {
   /*border-bottom: solid 1px #fff;*/
 
+}
+#coverImage {
+  position: absolute;
+}
+#defenderArea p{
+  font-size: 40px;
 }
 #game {
   background-image: url('../images/gameBoard.jpg');
 }
 #gameContainer {
+  text-align: center;
+}
+#gameButtons {
   text-align: center;
 }
 #jediStartLogo, #empireStartLogo {
@@ -77,12 +97,14 @@ align-items: center;
   right: -500px;
   opacity: 0;
 }
+#enemies {
+  display: inline-flex;
+
+}
+
 #enemies span {
   font-size: 40px;
   color: #fff;
-}
-#coverImage {
-  position: absolute;
 }
 
 #jedi, #sith {

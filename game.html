@@ -20,32 +20,45 @@
     <script src="./assets/js/index.js" charset="utf-8"></script>
     <script src="./assets/js/store.js" charset="utf-8"></script>
   </head>
-  <body id="game" class="gameBoard">
-    <div class="flexContainerColumnCenter">
+  <body id="game" class="game-board">
+    <div class="">
       <div class="container">
-        <div id="gameContainer" class="gameBoard">
-          <div class="col-lg-4 characterSelection">
+        <div id="" class="row">
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6characterSelection">
             <div id="userCharacter">
-              User Character GO's HERE
             </div>
           </div>
-          <div class="col-lg-4 characterSelection">
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 characterSelection">
             <div id="arena">
-              Arena GO's HERE
-            </div>
-            <div class="row">
-              <a href="#" id="start"><p>Start</p></a>
-            </div>
-            <div class="">
-              <a href="#"><p>Attack</p></a>
+              <span>You attacked <span id="currentEnemy"></span></span>
             </div>
           </div>
-          <div class="col-lg-4 characterSelection">
-            <div id="enemies">
-              <span>Enemies</span>
+          <div class="row">
+            <div class="characterSelection col-lg-12 col-md-4 col-sm-4 col-xs-6">
+              <div id="enemies" >
+              </div>
             </div>
+          </div>
+          <div class="row">
+            <div id="defenderArea">
+              <p>Defender</p>
+            </div>
+            <span id="currentEnemy"></span>
           </div>
         </div>
+        <div id="gameButtons">
+          <div class="row">
+            <a href="#" id="start">
+              <p>Start</p>
+            </a>
+          </div>
+          <div class="row">
+            <a href="#" id="attack">
+              <p>Attack</p>
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
   </body>

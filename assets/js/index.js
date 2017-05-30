@@ -23,11 +23,23 @@ $(document).ready(function() {
       computerLife: 100,
       wins: 0,
       losses: 0,
+    };
+    const randomizer = (length) => {
+      let numbers = Array.apply(null, {length: length });
+      let randomIndex = Math.floor(Math.random() * numbers.length);
+      return randomIndex;
+    };
 
+    // I initialze my actions on everypage just so i have access no matter WHAT
 
-    }
     const gameActions = GameActions();
     const characterActions = CharacterActions();
+
+
+    /**
+    * @const Init {Function} returns that with all of our gameSpecific methods
+
+    */
     const Init = () => {
       const that = {};
 
@@ -39,49 +51,65 @@ $(document).ready(function() {
           opacity: '1',
         }, 2100)
       };
+
       function assembleEnemies(chosenTeam) {
         enemies = store.getState().CHARACTER.currentEnemies;
         return JSON.parse(enemies);
-      }
+      };
+
       function assignUserCharacter() {
         userCharacter = store.getState().CHARACTER.userCharacter;
         return JSON.parse(userCharacter);
-      }
-      function createCharacterImage(targetEl, imagePath) {
+      };
+
+      function createCharacterImage(targetEl, imagePath, characterName, dataName) {
         let img = $('<img>');
+        let anchor = $('<a>');
         let imageContainer = $('<div>');
+        let characterTitle = $('<p>');
         img.addClass('img-circle');
-        img.attr('src', imagePath);
-        imageContainer.append(img);
+        img.attr({
+          src: imagePath,
+          title: characterName
+        });
+        anchor.attr({
+          href: '#',
+          'data-name': dataName,
+        })
+        imageContainer.addClass('character');
+        characterTitle.text(characterName);
+        anchor.append(img);
+        imageContainer.append(anchor);
+        $(characterTitle).appendTo(imageContainer);
         targetEl.append(imageContainer);
       };
 
       function createImages(el,character) {
         switch (character) {
-          case 'darthMaul': {
-            createCharacterImage($(el), './assets/images/Darth_Maul_200px.jpg');
+          case 'darthmaul': {
+            createCharacterImage($(el), './assets/images/Darth_Maul_200px.jpg', 'Darth-Maul', 'darthmaul');
           }
           break;
-          case 'countDooku': {
-            createCharacterImage($(el), './assets/images/Dooku_shrek.jpg');
+          case 'countdooku': {
+            createCharacterImage($(el), './assets/images/Dooku_shrek.jpg', 'Count Dooku', 'countdooku');
           }
             break;
           case 'palpatine': {
-            createCharacterImage($(el), './assets/images/200px-Palpatine.jpg');
+            createCharacterImage($(el), './assets/images/200px-Palpatine.jpg', 'Senator Palpatine', 'palpatine');
 
           }
           break;
           case 'luke': {
-            createCharacterImage($(el), './assets/images/Luke-200px.png')
+            createCharacterImage($(el), './assets/images/Luke-200px.png', 'Luke Sky-Walker', 'luke')
           }
           break;
           case 'yoda': {
-            createCharacterImage($(el), './assets/images/yoda-200px.png')
+            createCharacterImage($(el), './assets/images/yoda-200px.png', 'Yoda', 'yoda')
 
           }
           break;
-          case 'obiWan': {
-            createCharacterImage($(el), './assets/images/Masterobiwan.jpg')
+          case 'obiwan': {
+            createCharacterImage($(el), './assets/images/Masterobiwan.jpg', 'Obi-Wan Kenobi', 'obiwan')
 
           }
           break;
@@ -104,29 +132,71 @@ $(document).ready(function() {
         let audioObj = {
           src: './assets/sounds/informant.mp3',
           autoplay: true,
-        }
+        };
         let audioIntroEl = $('<audio>');
         audioIntroEl.attr(audioObj);
         $(audioIntroEl).appendTo("body");
       };
+      that.setUpCharacterSelection = () => {
+        /**
+        All our characterImages to choose from
+        */
+        let chosenTeam = store.getState().GAME.userTeam;
+        const lukeEl = $('#luke');
+        const yodaEl = $('#yoda');
+        const obiwanEl = $('#obiwan');
+        const darthMaulEl = $('#darthMaul');
+        const countDookuEl = $('#countDooku');
+        const palpatineEl = $('#palpatine');
+        const characterAudio = {
+          jedi: {
+            src: './assets/sounds'
+          }
+        }
+        luke = Character("luke", lukeEl, 30, 20);
+        yoda = Character("yoda", yodaEl, 80, 70);
+        obiwan = Character("obiwan", obiwanEl, 70, 60);
+        darthMaul = Character("darthMaul", darthMaulEl,60, 60);
+        countDooku = Character("countDooku", countDookuEl, 70, 60);
+        palpatine = Character("palpatine", palpatineEl, 80, 70);
+
+        let enemyArray = (elements) => {
+          let id = [];
+          elements.map((index, el) => {
+             $(el).children().map((index, subEl) => {
+              id.push($(subEl).attr('id'));
+            });
+          });
+          return id;
+        };
+
+        if (chosenTeam === 'jedi') {
+          $('#availableSith').css({ display: 'none'});
+          let sith = $('#sithCharacters').children();
+          enemies = enemyArray(sith);
+          store.dispatch(characterActions.setEnemies(enemies));
+        } else {
+          $('#availableJedi').css({ display: 'none'});
+          let jedi = $('#jediCharacters').children();
+          enemies = enemyArray(jedi);
+          store.dispatch(characterActions.setEnemies(enemies));
+        };
+      }
       that.createGameBoard = () => {
         let currentEnemies = assembleEnemies();
         let { userCharacter } = assignUserCharacter();
-        currentEnemies.map(enemy => createImages('#enemies',enemy));
+        currentEnemies.map(enemy => createImages('#enemies',enemy.toLowerCase()));
         createImages('#userCharacter',userCharacter.toLowerCase());
 
       };
       that.startGame = () => {
 
       }
+      that.select
       return that;
     };
 
-    const randomizer = (length) => {
-      let numbers = Array.apply(null, {length: length });
-      let randomIndex = Math.floor(Math.random() * numbers.length);
-      return randomIndex;
-    };
+
 
     /**
     @const Character A function that returns our Character{Object}
@@ -166,7 +236,6 @@ $(document).ready(function() {
       let currentCharacter;
       let previousCharacter = currentCharacter;
       currentCharacter = select(store.getState().CHARACTER);
-      console.log(' WHAT IS THE USER CHARACTER', currentCharacter);
       if (currentCharacter !== previousCharacter) {
          sessionStorage.setItem('userCharacter', JSON.stringify(currentCharacter));
       };
@@ -195,54 +264,18 @@ $(document).ready(function() {
     }
 
     if ($('body').hasClass('selectCharacters')){
-      /**
-      All our characterImages to choose from
-      */
-      let chosenTeam = store.getState().GAME.userTeam;
-      const lukeEl = $('#luke');
-      const yodaEl = $('#yoda');
-      const obiWanEl = $('#obiWan');
-      const darthMaulEl = $('#darthMaul');
-      const countDookuEl = $('#countDooku');
-      const palpatineEl = $('#palpatine');
-
-      luke = Character("Luke", lukeEl, 30, 20);
-      yoda = Character("Yoda", yodaEl, 80, 70);
-      obiWan = Character("ObiWan", obiWanEl, 70, 60);
-      darthMaul = Character("Darth-Maul", darthMaulEl,60, 60);
-      countDooku = Character("Count-Dooku", countDookuEl, 70, 60);
-      palpatine = Character("Palpatine", palpatineEl, 80, 70);
-
-      let enemyArray = (elements) => {
-        let id = [];
-        elements.map((index, el) => {
-          return $(el).children().map((index, subEl) => {
-            id.push($(subEl).attr('id'));
-          });
-        });
-        return id;
-      };
-
-      if (chosenTeam === 'jedi') {
-        $('#availableSith').css({ display: 'none'});
-        let sith = $('#sithCharacters').children();
-
-        enemies = enemyArray(sith);
-        store.dispatch(characterActions.setEnemies(enemies));
-      } else {
-        $('#availableJedi').css({ display: 'none'});
-        let jedi = $('#jediCharacters').children();
-        enemies = enemyArray(jedi);
-        store.dispatch(characterActions.setEnemies(enemies));
-      };
-
+      game = Init();
+      game.setUpCharacterSelection();
         ///////////////////////////////////////////////
     }
 
-    if ($('body').hasClass('gameBoard')) {
+    if ($('body').hasClass('game-board')) {
       game = Init();
       game.createGameBoard();
+
+      $('#enemies .character a').click(function() {
+        console.log(' WHAT IS THE THIS VALUE??????', $(this).attr('data-name'));
+      })
     }
 
-console.log(' WHAT IS THE STATE????', store.getState());
 });
