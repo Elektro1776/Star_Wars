@@ -21,45 +21,43 @@
     <script src="./assets/js/store.js" charset="utf-8"></script>
   </head>
   <body id="game" class="game-board">
-    <div class="">
-      <div class="container">
+      <div class="container" style="position: absolute">
         <div id="" class="row">
-          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6characterSelection">
-            <div id="userCharacter">
-            </div>
-          </div>
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 characterSelection">
-            <div id="arena">
-              <span>You attacked <span id="currentEnemy"></span></span>
+            <p>User Character</p>
+            <div id="userCharacter" class="pull-left">
             </div>
           </div>
           <div class="row">
-            <div class="characterSelection col-lg-12 col-md-4 col-sm-4 col-xs-6">
-              <div id="enemies" >
+            <div class="enemyRow characterSelection col-lg-12 col-md-4 col-sm-4 col-xs-6">
+              <div class="row">
+                <p class="pull-left" style="margin-left: 2%; font-size: 30px;">Available Enemies To Attack</p>
+              </div>
+              <div id="enemies" class="pull-left">
+
               </div>
             </div>
           </div>
-          <div class="row">
             <div id="defenderArea">
-              <p>Defender</p>
+                <!-- <a id="attack"> -->
+                  <button id="attack">Attack</button>
+                <!-- </a> -->
+                <div id="statements">
+                  <p id="attackStatments"></p>
+                  <p id="defenderStatments"></p>
+                </div>
+              <p id="defender" style="position: relative">Defender</p>
             </div>
             <span id="currentEnemy"></span>
-          </div>
         </div>
-        <div id="gameButtons">
+        <div id="gameButtons" class="col-lg-6">
           <div class="row">
             <a href="#" id="start">
               <p>Start</p>
             </a>
           </div>
-          <div class="row">
-            <a href="#" id="attack">
-              <p>Attack</p>
-            </a>
-          </div>
         </div>
 
       </div>
-    </div>
   </body>
 </html>

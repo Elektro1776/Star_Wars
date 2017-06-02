@@ -21,8 +21,6 @@ $(document).ready(function() {
       enimies: [],
       userLife: 100,
       computerLife: 100,
-      wins: 0,
-      losses: 0,
     };
     const randomizer = (length) => {
       let numbers = Array.apply(null, {length: length });
@@ -35,14 +33,36 @@ $(document).ready(function() {
     const gameActions = GameActions();
     const characterActions = CharacterActions();
 
-
+    /**
+    @const Character A function that returns our Character{Object}
+    @param name name of the character the user selectedCharacter
+    @param el the element attached the users character selection
+    @param power the strength of the attack of the character
+    @param defense the defense strength of the character
+    */
+    const Character = (name, el, power, defense, ) => {
+      var that = {};
+      that.actions = CharacterActions();
+      that.name = name;
+      that.el = el;
+      that.attackPower = power;
+      that.defensePower = defense;
+      that.HP = 100;
+      that.clickHandler = () => {
+        store.dispatch(that.actions.selectedCharacter(that));
+        // retrieveStorage()
+      }
+      that.el.click(that.clickHandler);
+      return that
+    };
     /**
     * @const Init {Function} returns that with all of our gameSpecific methods
 
     */
     const Init = () => {
       const that = {};
-
+      let currentEnemies,
+          userCharacter;
       function slide(el, top,left,right) {
         el.animate({
           top: top,
@@ -54,12 +74,13 @@ $(document).ready(function() {
 
       function assembleEnemies(chosenTeam) {
         enemies = store.getState().CHARACTER.currentEnemies;
-        return JSON.parse(enemies);
+        console.log(' WHAT ARE THE PARSED ENEMIES',enemies);
+        return enemies;
       };
 
       function assignUserCharacter() {
         userCharacter = store.getState().CHARACTER.userCharacter;
-        return JSON.parse(userCharacter);
+        return userCharacter;
       };
 
       function createCharacterImage(targetEl, imagePath, characterName, dataName) {
@@ -67,30 +88,50 @@ $(document).ready(function() {
         let anchor = $('<a>');
         let imageContainer = $('<div>');
         let characterTitle = $('<p>');
-        img.addClass('img-circle');
+        let characterAttack = $('<p>');
+        let enemies = store.getState().CHARACTER.currentEnemies;
+        let currentCharacter = store.getState().CHARACTER.userCharacter;
+        let enemyAttack;
+        let userAttack;
+        Object.values(enemies).map((value) => {
+          if(value.name === dataName) {
+            enemyAttack = value.defensePower;
+          }
+        });
+        if (currentCharacter.name === dataName) {
+          characterAttack.text(currentCharacter.defensePower)
+        }
+        img.addClass('img-thumbnail');
         img.attr({
           src: imagePath,
           title: characterName
         });
         anchor.attr({
-          href: '#',
           'data-name': dataName,
         })
+        characterAttack.addClass('attackPower');
+        characterAttack.text(enemyAttack);
         imageContainer.addClass('character');
         characterTitle.text(characterName);
+        characterTitle.css({ margin: 0 })
+        $(imageContainer).append(characterTitle);
         anchor.append(img);
         imageContainer.append(anchor);
-        $(characterTitle).appendTo(imageContainer);
+        $(characterAttack).appendTo(imageContainer);
         targetEl.append(imageContainer);
       };
-
+      function testingSpread(func, arguments) {
+        func(...arguments);
+      }
       function createImages(el,character) {
         switch (character) {
           case 'darthmaul': {
-            createCharacterImage($(el), './assets/images/Darth_Maul_200px.jpg', 'Darth-Maul', 'darthmaul');
+            testingSpread(createCharacterImage, [$(el), './assets/images/Darth_Maul_200px.jpg', 'Darth-Maul', 'darthmaul'])
+            // createCharacterImage($(el), './assets/images/Darth_Maul_200px.jpg', 'Darth-Maul', 'darthmaul');
           }
           break;
           case 'countdooku': {
+
             createCharacterImage($(el), './assets/images/Dooku_shrek.jpg', 'Count Dooku', 'countdooku');
           }
             break;
@@ -124,10 +165,14 @@ $(document).ready(function() {
         let { updateSideChosen } = GameActions();
 
         jediStartLogo.click(function() {
-          store.dispatch(updateSideChosen($(this).attr('value')))
+          // store.dispatch(updateSideChosen($(this).attr('value')))
+          let jedi = $(this).attr('value');
+          sessionStorage.setItem('teamChosen', jedi)
         });
         empireStartLogo.click(function() {
-          store.dispatch(updateSideChosen($(this).attr('value')));
+          // store.dispatch(updateSideChosen($(this).attr('value')));
+          let sith = $(this).attr('value');
+          sessionStorage.setItem('teamChosen', sith)
         });
         let audioObj = {
           src: './assets/sounds/informant.mp3',
@@ -137,11 +182,12 @@ $(document).ready(function() {
         audioIntroEl.attr(audioObj);
         $(audioIntroEl).appendTo("body");
       };
+
       that.setUpCharacterSelection = () => {
         /**
         All our characterImages to choose from
         */
-        let chosenTeam = store.getState().GAME.userTeam;
+        let chosenTeam = sessionStorage.getItem('teamChosen');
         const lukeEl = $('#luke');
         const yodaEl = $('#yoda');
         const obiwanEl = $('#obiwan');
@@ -153,69 +199,101 @@ $(document).ready(function() {
             src: './assets/sounds'
           }
         }
-        luke = Character("luke", lukeEl, 30, 20);
-        yoda = Character("yoda", yodaEl, 80, 70);
-        obiwan = Character("obiwan", obiwanEl, 70, 60);
-        darthMaul = Character("darthMaul", darthMaulEl,60, 60);
-        countDooku = Character("countDooku", countDookuEl, 70, 60);
-        palpatine = Character("palpatine", palpatineEl, 80, 70);
+        luke = Character("luke", lukeEl, 30, 120);
+        yoda = Character("yoda", yodaEl, 80, 170);
+        obiwan = Character("obiwan", obiwanEl, 70, 160);
+        darthMaul = Character("darthmaul", darthMaulEl,60, 160);
+        countDooku = Character("countdooku", countDookuEl, 70, 160);
+        palpatine = Character("palpatine", palpatineEl, 80, 170);
 
+        let charactersArray = [luke, yoda, obiwan, darthMaul, countDooku, palpatine]
         let enemyArray = (elements) => {
           let id = [];
           elements.map((index, el) => {
              $(el).children().map((index, subEl) => {
-              id.push($(subEl).attr('id'));
+                charactersArray.map((character) => {
+                  let obj = {};
+                  let elId = $(subEl).attr('data-name');
+                  if (character.name === elId) {
+                    id.push(character);
+                  }
+                });
             });
           });
           return id;
         };
 
+        console.log(' CHOOSEN TEAMMMMMM', chosenTeam);
         if (chosenTeam === 'jedi') {
-          $('#availableSith').css({ display: 'none'});
+          $('#availableJedi').css({ display: 'block'});
           let sith = $('#sithCharacters').children();
           enemies = enemyArray(sith);
-          store.dispatch(characterActions.setEnemies(enemies));
+          // store.dispatch(characterActions.setEnemies(enemies));
+          sessionStorage.setItem('currentEnemies', JSON.stringify(enemies))
         } else {
-          $('#availableJedi').css({ display: 'none'});
+          $('#availableSith').css({ display: 'block'});
           let jedi = $('#jediCharacters').children();
           enemies = enemyArray(jedi);
-          store.dispatch(characterActions.setEnemies(enemies));
+          sessionStorage.setItem('currentEnemies', JSON.stringify(enemies))
         };
       }
       that.createGameBoard = () => {
-        let currentEnemies = assembleEnemies();
-        let { userCharacter } = assignUserCharacter();
-        currentEnemies.map(enemy => createImages('#enemies',enemy.toLowerCase()));
-        createImages('#userCharacter',userCharacter.toLowerCase());
+        currentEnemies = assembleEnemies();
+        userCharacter  = assignUserCharacter();
+        currentEnemies.map(enemy => {
+          createImages('#enemies',enemy.name.toLowerCase())
+        });
+        createImages('#userCharacter',userCharacter.name.toLowerCase());
 
       };
       that.startGame = () => {
 
       }
-      that.select
+      that.selectedEnemy = (selectedEnemy) => {
+        let currentEnemy = store.getState().CHARACTER.currentEnemies
+        Object.values(currentEnemy).map((enemy) => {
+          if (enemy.name === selectedEnemy) {
+            store.dispatch(gameActions.updateEnemySelected(enemy));
+          }
+        })
+      };
+      that.attack = () => {
+        // console.log(' STOREEEEE STATE', store.getState().CHARACTER.userCharacter);
+        let defender = store.getState().GAME.currentEnemy;
+        let attacker = store.getState().CHARACTER.userCharacter;
+        let damageToDefender = defender.defensePower - attacker.attackPower;
+        console.log(' WHAT ARE THE POWERRRRSSSSS',defender,  attacker);
+        let damageToAttacker = attacker.defensePower - defender.attackPower;
+        let attackerAttackText = `You attacked ${defender.name} for ${attacker.attackPower}`;
+        let defenderAttackText = `${defender.name} Attacked you for ${defender.attackPower}`;
+        let attackEl = $('#attackStatments');
+        let defenderEl = $('#defenderStatments');
+        attackEl.css({
+         'font-size': '20px',
+          color: '#fff',
+          position: 'relative',
+          left: '300px',
+        });
+        defenderEl.css({
+         'font-size': '20px',
+          color: '#fff',
+          position: 'relative',
+          left: '300px',
+        });
+        $('#defender').css({
+          top: '-50px',
+        });
+        attackEl.html(attackerAttackText);
+        defenderEl.html(defenderAttackText);
+        $('#statements').css({
+          height: '70px',
+        });
+        $('.selectedEnemy .attackPower').html(damageToDefender);
+        // let test = $('. selectedEnemy .attackPower');
+        // console.log(' WAHT IS OUR TEST TTTETETE', test);
+        store.dispatch(characterActions.updateCharacterAttack(attacker.attackPower));
+      }
       return that;
-    };
-
-
-
-    /**
-    @const Character A function that returns our Character{Object}
-    @param name name of the character the user selectedCharacter
-    @param el the element attached the users character selection
-    @param power the strength of the attack of the character
-    @param defense the defense strength of the character
-    */
-    const Character = (name, el, power, defense, ) => {
-      var that = {};
-      that.actions = CharacterActions();
-      that.name = name;
-      that.el = el;
-      that.attackPower = power;
-      that.defensePower = defense;
-      that.HP = 100;
-      that.clickHandler = () => store.dispatch(that.actions.selectedCharacter(that))
-      that.el.click(that.clickHandler);
-      return that
     };
 
     /**
@@ -226,7 +304,7 @@ $(document).ready(function() {
     let choseTeamHandler = () => {
       let previousTeam = currentTeam;
       currentTeam = select(store.getState().GAME.teamChosen);
-
+      // console.log(' HELLO TEAMMMMMM', currentTeam);
       if (currentTeam !== previousTeam) {
         sessionStorage.setItem('userTeam', currentTeam);
       };
@@ -235,25 +313,45 @@ $(document).ready(function() {
     let characterHandler = () => {
       let currentCharacter;
       let previousCharacter = currentCharacter;
-      currentCharacter = select(store.getState().CHARACTER);
-      if (currentCharacter !== previousCharacter) {
+      currentCharacter = select(store.getState().CHARACTER.userCharacter);
+      // console.log(' currentCharacter HANDLEER FIRE!!!@!@!@!@!@!', currentCharacter, sessionStorage);
+      // let parsedCharacter = JSON.parse(currentCharacter);
+        if (currentCharacter !== previousCharacter) {
          sessionStorage.setItem('userCharacter', JSON.stringify(currentCharacter));
+        //  currentCharacter = JSON.parse(sessionStorage.getItem('userCharacter'))
+        //  store.dispatch(characterActions.selectedCharacter(currentCharacter))
       };
-    }
+    };
     let enemiesHandler = () => {
       let currentEnemies;
       let previousEnemies = currentEnemies;
       currentEnemies = select(store.getState().CHARACTER.currentEnemies);
       if (currentEnemies !== previousEnemies) {
-        sessionStorage.setItem('currentEnemies', JSON.stringify(currentEnemies))
+        // sessionStorage.setItem('currentEnemies', JSON.stringify(currentEnemies))
       }
-    }
+    };
+    let currentEnemyHandler = () => {
+      let currentEnemy;
+      let previousEnemy = currentEnemy;
+      currentEnemy = select(store.getState().GAME.currentEnemy);
+      if (currentEnemy !== previousEnemy){
+      }
+     }
     let teamHandler = store.subscribe(() => choseTeamHandler());
     let handleCharacterSelection = store.subscribe(() => characterHandler());
     let enemyHandler = store.subscribe(() => enemiesHandler());
+    let defendingEnemyHandler = store.subscribe(() => currentEnemyHandler());
+    function retrieveStorage(prop) {
+    // let userCharacter = JSON.parse(sessionStorage.getItem('userCharacter'))
+    // let teamChosen = sessionStorage.getItem('teamChosen');
+      // store.dispatch(characterActions.selectedCharacter(userCharacter));
+      // store.dispatch(gameActions.updateSideChosen(teamChosen));
+      // console.log(' WHAT IS THE CURRENTSTATE????', userCharacter, teamChosen);
+    }
 
     /////////////////////////////////////
-
+    // let test = JSON.parse(select(store.getState().CHARACTER.userCharacter));
+    // console.log(' WHAT IS THE TEST!!!!!!', test);
     if ($('body').hasClass('gameIntro')) {
       // Our logos on the initial start
       jediStartLogo = $('#jediStartLogo');
@@ -264,18 +362,37 @@ $(document).ready(function() {
     }
 
     if ($('body').hasClass('selectCharacters')){
+      let teamChosen = sessionStorage.getItem('teamChosen');
+      store.dispatch(gameActions.updateSideChosen(teamChosen));
+
       game = Init();
       game.setUpCharacterSelection();
         ///////////////////////////////////////////////
     }
 
     if ($('body').hasClass('game-board')) {
+      // retrieveStorage();
+      let usersCharacter = JSON.parse(sessionStorage.getItem('userCharacter'));
+      let currentEnemies = JSON.parse(sessionStorage.getItem('currentEnemies'));
+      // console.log(' WHHHHHHHHATTTTTT ARE THE ENEMIES?????', currentEnemies);
+      store.dispatch(characterActions.selectedCharacter(usersCharacter));
+      store.dispatch(characterActions.setEnemies(currentEnemies));
       game = Init();
       game.createGameBoard();
 
       $('#enemies .character a').click(function() {
-        console.log(' WHAT IS THE THIS VALUE??????', $(this).attr('data-name'));
-      })
+        game.selectedEnemy($(this).attr('data-name'));
+        $(this).parent().addClass('selectedEnemy');
+        $(this).parent('.character').css({ position: 'relative'}).animate({
+          top: '300px',
+
+        });
+      });
+      // let parsed = JSON.parse(sessionStorage.getItem('userCharacter'))
+      // console.log(' WHAT IS OUR SESSION STORAGE????', parsed);
+      $('#attack').click(function() {
+        game.attack()
+      });
     }
 
 });

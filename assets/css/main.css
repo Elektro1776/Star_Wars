@@ -1,11 +1,10 @@
 #availableJedi p,  #availableSith p {
   color: #444;
 }
-.character:first-child {
-  max-height: 200px;
-}
+
 .character {
   padding: 20px;
+
 }
 .characters {
 display: -webkit-flex;
@@ -23,14 +22,19 @@ align-items: center;
   background-color: rgba(324,615,292,0.6);
   border-radius: 100px;
 }
+.charactersContainer #availableJedi, #availableSith {
+  display: none;
+}
 .characterSelection {
-  min-height: 300px;
   text-align: center;
 }
 .characterSelection p {
-  font-size: 30px;
+  font-size: 18px;
   color: #fff;
   text-align: center;
+}
+.enemyRow {
+  margin-top: 3%;
 }
 .flexContainerColumnCenter {
   display: flex;
@@ -53,7 +57,9 @@ align-items: center;
 .jumbotron {
   background-image: url('../images/spaceBackGround1.jpg');
 }
-
+.img-thumbnail {
+  max-height: 100px;
+}
 .startIcons {
   /*position: relative;*/
 }
@@ -65,6 +71,18 @@ align-items: center;
 #arena span {
   /*font-size: */
 }
+#attack {
+  background-color: #444;
+  border-radius: 25px;
+  text-align: center;
+  padding: 10px;
+
+}
+#attack span {
+  color: #fff;
+  font-size: 18px;
+
+}
 #availableJedi {
   /*border-bottom: solid 1px #fff;*/
 
@@ -72,9 +90,12 @@ align-items: center;
 #coverImage {
   position: absolute;
 }
-#defenderArea p{
+#defenderArea p, a{
   font-size: 40px;
+  /*margin: 2% 0 0 0;*/
 }
+/*position: relative;
+    top: 370px;*/
 #game {
   background-image: url('../images/gameBoard.jpg');
 }
@@ -99,9 +120,22 @@ align-items: center;
 }
 #enemies {
   display: inline-flex;
-
+  position: relative;
+  top: 10px;
+  left: 100px;
 }
 
+
+#enemies div {
+  background-color: #ff0000;
+  height: 175px;
+  /*margin: 20px;*/
+  border: solid 2px #444;
+}
+/*#enemies img {
+  border-color: #ff0000;
+  border-width: 10px;
+}*/
 #enemies span {
   font-size: 40px;
   color: #fff;
@@ -128,4 +162,18 @@ align-items: center;
     border: 1px solid transparent;
     border-radius: 4px;
     /*background-color: #444;*/
+}
+#statements {
+  background-color: #444;
+  /*height: 70px;*/
+}
+
+/*#userCharacter img{
+  border-color: #008000;
+  border-width: 10px;
+}*/
+
+#userCharacter .character {
+  padding: 20px 10px 10px 10px;
+  background-color: #008000
 }
