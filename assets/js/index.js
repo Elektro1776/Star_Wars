@@ -46,7 +46,7 @@ $(document).ready(function() {
       that.name = name;
       that.el = el;
       that.attackPower = power;
-      that.defensePower = defense;
+      that.health = defense;
       that.HP = 100;
       that.clickHandler = () => {
         store.dispatch(that.actions.selectedCharacter(that));
@@ -73,16 +73,20 @@ $(document).ready(function() {
       };
 
       function assembleEnemies(chosenTeam) {
-        enemies = store.getState().CHARACTER.currentEnemies;
-        console.log(' WHAT ARE THE PARSED ENEMIES',enemies);
-        return enemies;
+        return store.getState().CHARACTER.currentEnemies;
       };
 
       function assignUserCharacter() {
-        userCharacter = store.getState().CHARACTER.userCharacter;
-        return userCharacter;
+        return store.getState().CHARACTER.userCharacter;
       };
-
+      /**
+      * this is where we actually create the image for the page and appened the
+      * image to the target element
+      @param targetEl the targetEl we want the picture to end up on
+      @param imagePath the imagePath
+      @param characterName pretty self explanatory
+      @param dataName data-name attribute value associated to the element as its spelled correctly for the if check.
+      */
       function createCharacterImage(targetEl, imagePath, characterName, dataName) {
         let img = $('<img>');
         let anchor = $('<a>');
@@ -95,11 +99,11 @@ $(document).ready(function() {
         let userAttack;
         Object.values(enemies).map((value) => {
           if(value.name === dataName) {
-            enemyAttack = value.defensePower;
+            enemyAttack = value.health;
           }
         });
         if (currentCharacter.name === dataName) {
-          characterAttack.text(currentCharacter.defensePower)
+          characterAttack.text(currentCharacter.health)
         }
         img.addClass('img-thumbnail');
         img.attr({
@@ -110,8 +114,8 @@ $(document).ready(function() {
           'data-name': dataName,
         })
         characterAttack.addClass('attackPower');
-        characterAttack.text(enemyAttack);
         imageContainer.addClass('character');
+        characterAttack.text(enemyAttack);
         characterTitle.text(characterName);
         characterTitle.css({ margin: 0 })
         $(imageContainer).append(characterTitle);
@@ -120,9 +124,16 @@ $(document).ready(function() {
         $(characterAttack).appendTo(imageContainer);
         targetEl.append(imageContainer);
       };
+      // testing out different way of passing arguments... spreadddd it
       function testingSpread(func, arguments) {
         func(...arguments);
       }
+
+      /**
+      * this is where we create our images
+      @param el the html element we want to add a picture too
+      @param character the charater name we run our switch statement with
+      */
       function createImages(el,character) {
         switch (character) {
           case 'darthmaul': {
@@ -158,19 +169,16 @@ $(document).ready(function() {
           return
         }
       }
+      // Sweet little intro scene function to animate our logos
+      // and update sessionStorage with our chosen team.
       that.fireIntro = () => {
         slide(jediStartLogo, '+=200px', '+=500px', '');
         slide(empireStartLogo, '+=200px', '','-=500px');
-
-        let { updateSideChosen } = GameActions();
-
         jediStartLogo.click(function() {
-          // store.dispatch(updateSideChosen($(this).attr('value')))
           let jedi = $(this).attr('value');
           sessionStorage.setItem('teamChosen', jedi)
         });
         empireStartLogo.click(function() {
-          // store.dispatch(updateSideChosen($(this).attr('value')));
           let sith = $(this).attr('value');
           sessionStorage.setItem('teamChosen', sith)
         });
@@ -185,7 +193,6 @@ $(document).ready(function() {
 
       that.setUpCharacterSelection = () => {
         /**
-        All our characterImages to choose from
         */
         let chosenTeam = sessionStorage.getItem('teamChosen');
         const lukeEl = $('#luke');
@@ -223,12 +230,10 @@ $(document).ready(function() {
           return id;
         };
 
-        console.log(' CHOOSEN TEAMMMMMM', chosenTeam);
         if (chosenTeam === 'jedi') {
           $('#availableJedi').css({ display: 'block'});
           let sith = $('#sithCharacters').children();
           enemies = enemyArray(sith);
-          // store.dispatch(characterActions.setEnemies(enemies));
           sessionStorage.setItem('currentEnemies', JSON.stringify(enemies))
         } else {
           $('#availableSith').css({ display: 'block'});
@@ -237,6 +242,10 @@ $(document).ready(function() {
           sessionStorage.setItem('currentEnemies', JSON.stringify(enemies))
         };
       }
+
+      // We will create our game board HERE
+      // basically get all the character data from our store and create images
+      // for each character
       that.createGameBoard = () => {
         currentEnemies = assembleEnemies();
         userCharacter  = assignUserCharacter();
@@ -246,28 +255,33 @@ $(document).ready(function() {
         createImages('#userCharacter',userCharacter.name.toLowerCase());
 
       };
-      that.startGame = () => {
-
-      }
+      // figures out who our selected enemy is so we can use the right values for
+      // calculating damage
       that.selectedEnemy = (selectedEnemy) => {
         let currentEnemy = store.getState().CHARACTER.currentEnemies
         Object.values(currentEnemy).map((enemy) => {
           if (enemy.name === selectedEnemy) {
             store.dispatch(gameActions.updateEnemySelected(enemy));
           }
-        })
+        });
+        $('#statements').css({ top: '0px'})
       };
+
+      // this is our attack method here
+      // calculate the damage for each player and update the html with the new Health re
+      // remaining and update our store with our new attackPower;
       that.attack = () => {
-        // console.log(' STOREEEEE STATE', store.getState().CHARACTER.userCharacter);
         let defender = store.getState().GAME.currentEnemy;
         let attacker = store.getState().CHARACTER.userCharacter;
-        let damageToDefender = defender.defensePower - attacker.attackPower;
+        let damageToDefender = defender.health - attacker.attackPower;
         console.log(' WHAT ARE THE POWERRRRSSSSS',defender,  attacker);
-        let damageToAttacker = attacker.defensePower - defender.attackPower;
+        let damageToAttacker = attacker.health - defender.attackPower;
         let attackerAttackText = `You attacked ${defender.name} for ${attacker.attackPower}`;
         let defenderAttackText = `${defender.name} Attacked you for ${defender.attackPower}`;
         let attackEl = $('#attackStatments');
         let defenderEl = $('#defenderStatments');
+        let selectedEnemy = $('.selectedEnemy');
+        let currentCharacter = $('#userCharacter');
         attackEl.css({
          'font-size': '20px',
           color: '#fff',
@@ -283,15 +297,41 @@ $(document).ready(function() {
         $('#defender').css({
           top: '-50px',
         });
-        attackEl.html(attackerAttackText);
-        defenderEl.html(defenderAttackText);
-        $('#statements').css({
-          height: '70px',
-        });
-        $('.selectedEnemy .attackPower').html(damageToDefender);
-        // let test = $('. selectedEnemy .attackPower');
-        // console.log(' WAHT IS OUR TEST TTTETETE', test);
-        store.dispatch(characterActions.updateCharacterAttack(attacker.attackPower));
+        if (damageToDefender <= 0) {
+          selectedEnemy.css({ display: 'none'}).removeClass('selectedEnemy');
+          attackEl.html(`You defeated ${defender.name.toUpperCase()} ! Choose another enemy to test your skill!`)
+          return defenderEl.html('');
+        } else if (damageToAttacker <= 0) {
+          console.log(' Attacker DAMAGE IS 0 OR LESSSSS', damageToDefender);
+          currentCharacter.css({ display: 'none'}).removeClass('selectedEnemy');
+          attackEl.html(`${defender.name.toUpperCase()} defeated you ! <a href="./index.html">PlayAgain?</a>`);
+
+            return that.fireGameLoss();
+        } else {
+          attackEl.html(attackerAttackText);
+          defenderEl.html(defenderAttackText);
+          $('#statements').css({
+            height: '70px',
+            'background-color': '#444',
+            'z-index': '9999',
+            position: 'relative',
+          });
+          $('.selectedEnemy .attackPower').html(damageToDefender);
+          console.log(' DAMAGE TO ATTACKER', damageToAttacker);
+          $('#userCharacter .attackPower').html(damageToAttacker);
+
+        }
+
+        let powerUpgrade = attacker.attackPower + 10;
+        store.dispatch(characterActions.updateCharacterAttack(powerUpgrade));
+        store.dispatch(gameActions.updateEnemyHealth(damageToDefender));
+        store.dispatch(characterActions.updateCharacterHealth(damageToAttacker));
+      }
+      that.fireGameLoss = () => {
+
+      };
+      that.fireGameWin = () => {
+
       }
       return that;
     };
@@ -314,44 +354,14 @@ $(document).ready(function() {
       let currentCharacter;
       let previousCharacter = currentCharacter;
       currentCharacter = select(store.getState().CHARACTER.userCharacter);
-      // console.log(' currentCharacter HANDLEER FIRE!!!@!@!@!@!@!', currentCharacter, sessionStorage);
-      // let parsedCharacter = JSON.parse(currentCharacter);
         if (currentCharacter !== previousCharacter) {
          sessionStorage.setItem('userCharacter', JSON.stringify(currentCharacter));
-        //  currentCharacter = JSON.parse(sessionStorage.getItem('userCharacter'))
-        //  store.dispatch(characterActions.selectedCharacter(currentCharacter))
       };
     };
-    let enemiesHandler = () => {
-      let currentEnemies;
-      let previousEnemies = currentEnemies;
-      currentEnemies = select(store.getState().CHARACTER.currentEnemies);
-      if (currentEnemies !== previousEnemies) {
-        // sessionStorage.setItem('currentEnemies', JSON.stringify(currentEnemies))
-      }
-    };
-    let currentEnemyHandler = () => {
-      let currentEnemy;
-      let previousEnemy = currentEnemy;
-      currentEnemy = select(store.getState().GAME.currentEnemy);
-      if (currentEnemy !== previousEnemy){
-      }
-     }
     let teamHandler = store.subscribe(() => choseTeamHandler());
     let handleCharacterSelection = store.subscribe(() => characterHandler());
-    let enemyHandler = store.subscribe(() => enemiesHandler());
-    let defendingEnemyHandler = store.subscribe(() => currentEnemyHandler());
-    function retrieveStorage(prop) {
-    // let userCharacter = JSON.parse(sessionStorage.getItem('userCharacter'))
-    // let teamChosen = sessionStorage.getItem('teamChosen');
-      // store.dispatch(characterActions.selectedCharacter(userCharacter));
-      // store.dispatch(gameActions.updateSideChosen(teamChosen));
-      // console.log(' WHAT IS THE CURRENTSTATE????', userCharacter, teamChosen);
-    }
-
     /////////////////////////////////////
-    // let test = JSON.parse(select(store.getState().CHARACTER.userCharacter));
-    // console.log(' WHAT IS THE TEST!!!!!!', test);
+
     if ($('body').hasClass('gameIntro')) {
       // Our logos on the initial start
       jediStartLogo = $('#jediStartLogo');
@@ -371,10 +381,8 @@ $(document).ready(function() {
     }
 
     if ($('body').hasClass('game-board')) {
-      // retrieveStorage();
       let usersCharacter = JSON.parse(sessionStorage.getItem('userCharacter'));
       let currentEnemies = JSON.parse(sessionStorage.getItem('currentEnemies'));
-      // console.log(' WHHHHHHHHATTTTTT ARE THE ENEMIES?????', currentEnemies);
       store.dispatch(characterActions.selectedCharacter(usersCharacter));
       store.dispatch(characterActions.setEnemies(currentEnemies));
       game = Init();
@@ -388,11 +396,10 @@ $(document).ready(function() {
 
         });
       });
-      // let parsed = JSON.parse(sessionStorage.getItem('userCharacter'))
-      // console.log(' WHAT IS OUR SESSION STORAGE????', parsed);
       $('#attack').click(function() {
         game.attack()
       });
+
     }
 
 });

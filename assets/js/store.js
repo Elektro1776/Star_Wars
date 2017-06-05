@@ -34,6 +34,7 @@ const GAME_ACTIONS = {
     UPDATE_LOSSES: 'UPDATE_LOSSES',
     UPDATE_SIDE_CHOSEN: 'UPDATE_SIDE_CHOSEN',
     UPDATE_ENEMY_SELECTED: 'UPDATE_ENEMY_SELECTED',
+    UPDATE_ENEMY_HEALTH: 'UPDATE_ENEMY_HEALTH',
 }
 // ------------------------------------------
 // ------------------------------------------
@@ -70,21 +71,20 @@ const ELEKTRO = {
 */
 const CharacterActions = () => {
     const that = {};
-    that.selectedCharacter = ({name, HP, attackPower, defensePower}) => {
-      console.log(' HOW ARE THE CHARACTER PROPS GETTING SET?????', name, HP, attackPower, defensePower);
+    that.selectedCharacter = ({name, HP, attackPower, health}) => {
       return {
-         type: 'SET_USER_CHARACTER', name, HP, attackPower, defensePower
+         type: 'SET_USER_CHARACTER', name, HP, attackPower, health
        }
      };
     that.setEnemies = (enemies) => ({ type: 'SET_ENIMIES', enemies });
     that.updateCurrentEnemy = (currentEnemy) => ({ type: 'UPDATE_CURRENT_ENEMY', currentEnemy })
     that.updateCharacterAttack = (attack) => {
-      attack += 10;
-      return {
-        type: 'UPDATE_CHARACTER_ATTACK',
-        attack,
-      }
-    }
+        return {
+          type: 'UPDATE_CHARACTER_ATTACK',
+          attack,
+        };
+    };
+    that.updateCharacterHealth = (health) => ({ type: 'UPDATE_CHARACTER_HEALTH', health});
     return that;
 }
 const GameActions = () => {
@@ -93,8 +93,17 @@ const GameActions = () => {
       return { type: 'UPDATE_SIDE_CHOSEN', sideChosen}
     };
   that.updateEnemySelected = (currentEnemy) => (
-    { type: 'UPDATE_ENEMY_SELECTED', currentEnemy }
+    {
+       type: 'UPDATE_ENEMY_SELECTED',
+        currentEnemy
+    }
   );
+  that.updateEnemyHealth = (enemyHealth) => {
+      return {
+        type: 'UPDATE_ENEMY_HEALTH',
+        enemyHealth,
+      };
+  };
   return that;
 }
 /**
@@ -104,12 +113,11 @@ const GameActions = () => {
 // let test = sessionStorage.getItem('userCharacter');
 const CHARACTER = ELEKTRO.createReducer(initialCharacterState, {
     [CHARACTER_ACTIONS.SET_USER_CHARACTER](state,action) {
-      console.log(' DOES THIS SET CHARACTER FIRE?????', action, state);
-          const { name, attackPower, defensePower, HP } = action;
+          const { name, attackPower, health, HP } = action;
           return Object.assign({}, state, {userCharacter: {
             name,
             attackPower,
-            defensePower,
+            health,
             HP,
           }});
     },
@@ -119,10 +127,13 @@ const CHARACTER = ELEKTRO.createReducer(initialCharacterState, {
     [CHARACTER_ACTIONS.UPDATE_CHARACTER_ATTACK](state, action) {
         let character = ELEKTRO.updateObjectProp(state.userCharacter, { attackPower: action.attack})
 
-        let test = Object.assign({}, state, {userCharacter: character});
-        console.log(' WHAT IS THE TES////STSTS/TSTST', test);
         return Object.assign({}, state, {userCharacter: character});
+    },
+    [CHARACTER_ACTIONS.UPDATE_CHARACTER_HEALTH](state, action) {
+        let character = ELEKTRO.updateObjectProp(state.userCharacter, { health: action.health });
+        return Object.assign({}, state, { userCharacter: character });
     }
+
 });
 
 const GAME = ELEKTRO.createReducer(initialGameState, {
@@ -132,6 +143,10 @@ const GAME = ELEKTRO.createReducer(initialGameState, {
   [GAME_ACTIONS.UPDATE_ENEMY_SELECTED](state, action) {
       return Object.assign({}, state, { currentEnemy: action.currentEnemy });
   },
+  [GAME_ACTIONS.UPDATE_ENEMY_HEALTH](state, action) {
+    let updatedEnemyHealth = ELEKTRO.updateObjectProp(state.currentEnemy, { health: action.enemyHealth})
+    return Object.assign({}, state, { currentEnemy: updatedEnemyHealth });
+  }
 });
 // ------------------------------------------------
 // ------------------------------------------------

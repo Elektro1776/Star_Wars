@@ -163,8 +163,15 @@ align-items: center;
     border-radius: 4px;
     /*background-color: #444;*/
 }
+#playAgain {
+  color: #444;
+  cursor: pointer;
+};
+
 #statements {
   background-color: #444;
+  z-index: 9999;
+  position: relative;
   /*height: 70px;*/
 }
 
