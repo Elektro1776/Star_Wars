@@ -55,9 +55,9 @@ const ELEKTRO = {
   },
   updateObjectProp: (oldState, newState) => {
     // console.log(' OLD STATE!@!!!!!!', JSON.parse(oldState));
-    console.log('NEW STATE @!@!@!@!', oldState, newState);
+    // console.log('NEW STATE @!@!@!@!', oldState, newState);
       let updatedProp = Object.assign({}, oldState, newState);
-      console.log(' UPDATED OBJJJJJJJJ', updatedProp);
+      // console.log(' UPDATED OBJJJJJJJJ', updatedProp);
       return updatedProp;
   }
 };

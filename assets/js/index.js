@@ -206,12 +206,12 @@ $(document).ready(function() {
             src: './assets/sounds'
           }
         }
-        luke = Character("luke", lukeEl, 30, 120);
-        yoda = Character("yoda", yodaEl, 80, 170);
-        obiwan = Character("obiwan", obiwanEl, 70, 160);
-        darthMaul = Character("darthmaul", darthMaulEl,60, 160);
-        countDooku = Character("countdooku", countDookuEl, 70, 160);
-        palpatine = Character("palpatine", palpatineEl, 80, 170);
+        luke = Character("luke", lukeEl, 20, 120);
+        yoda = Character("yoda", yodaEl, 50, 170);
+        obiwan = Character("obiwan", obiwanEl, 30, 160);
+        darthMaul = Character("darthmaul", darthMaulEl,30, 160);
+        countDooku = Character("countdooku", countDookuEl, 30, 160);
+        palpatine = Character("palpatine", palpatineEl, 40, 170);
 
         let charactersArray = [luke, yoda, obiwan, darthMaul, countDooku, palpatine]
         let enemyArray = (elements) => {
@@ -266,15 +266,23 @@ $(document).ready(function() {
         });
         $('#statements').css({ top: '0px'})
       };
-
+      function removeEnemies(enemyName, remainingEnemies){
+        return remainingEnemies.filter((value, index) => {
+          if (value.name !== enemyName) {
+            return value
+          }
+        })
+      }
       // this is our attack method here
       // calculate the damage for each player and update the html with the new Health re
       // remaining and update our store with our new attackPower;
       that.attack = () => {
         let defender = store.getState().GAME.currentEnemy;
+        let defenderName = $('.selectedEnemy').children('a').attr('data-name');
         let attacker = store.getState().CHARACTER.userCharacter;
+        let enemiesRemaining = store.getState().CHARACTER.currentEnemies;
         let damageToDefender = defender.health - attacker.attackPower;
-        console.log(' WHAT ARE THE POWERRRRSSSSS',defender,  attacker);
+        console.log(' WHAT ARE THE POWERRRRSSSSS', store.getState().CHARACTER,  store.getState().GAME);
         let damageToAttacker = attacker.health - defender.attackPower;
         let attackerAttackText = `You attacked ${defender.name} for ${attacker.attackPower}`;
         let defenderAttackText = `${defender.name} Attacked you for ${defender.attackPower}`;
@@ -298,16 +306,21 @@ $(document).ready(function() {
           top: '-50px',
         });
         if (damageToDefender <= 0) {
+          enemiesRemaining = removeEnemies(defenderName, enemiesRemaining);
+          console.log(' ENEMEIES REMAINGING!!!!!', enemiesRemaining);
+          store.dispatch(characterActions.setEnemies(enemiesRemaining))
           selectedEnemy.css({ display: 'none'}).removeClass('selectedEnemy');
           attackEl.html(`You defeated ${defender.name.toUpperCase()} ! Choose another enemy to test your skill!`)
+          if (enemiesRemaining.length == 0) {
+            attackEl.html(`You Won!!! `)
+          }
           return defenderEl.html('');
         } else if (damageToAttacker <= 0) {
-          console.log(' Attacker DAMAGE IS 0 OR LESSSSS', damageToDefender);
           currentCharacter.css({ display: 'none'}).removeClass('selectedEnemy');
-          attackEl.html(`${defender.name.toUpperCase()} defeated you ! <a href="./index.html">PlayAgain?</a>`);
+          defenderEl.html('');
+          return attackEl.html(`You Lost! ${defender.name.toUpperCase()} defeated you ! <a href="./index.html">PlayAgain?</a>`);
 
-            return that.fireGameLoss();
-        } else {
+        }else {
           attackEl.html(attackerAttackText);
           defenderEl.html(defenderAttackText);
           $('#statements').css({
@@ -317,7 +330,6 @@ $(document).ready(function() {
             position: 'relative',
           });
           $('.selectedEnemy .attackPower').html(damageToDefender);
-          console.log(' DAMAGE TO ATTACKER', damageToAttacker);
           $('#userCharacter .attackPower').html(damageToAttacker);
 
         }
@@ -327,6 +339,7 @@ $(document).ready(function() {
         store.dispatch(gameActions.updateEnemyHealth(damageToDefender));
         store.dispatch(characterActions.updateCharacterHealth(damageToAttacker));
       }
+
       that.fireGameLoss = () => {
 
       };
